@@ -35,7 +35,7 @@ module.exports = {
         "no-shadow": "warn",
         "indent": ["error", 4, { SwitchCase: 1 }],
         semi: "error",
-        "max-len": ["error", { "code": 140 }],
+        "max-len": ["error", { code: 140, ignoreUrls: true, ignoreStrings: true, ignoreTemplateLiterals: true }],
         "no-nested-ternary": "error",
         "prefer-object-spread": "error",
         "space-before-function-paren": ["error", "never"],
