@@ -65,7 +65,7 @@ module.exports = {
         "react/jsx-equals-spacing": "error",
         "react/jsx-first-prop-new-line": "error",
         "react/jsx-key": "error",
-        "react/jsx-max-props-per-line": ["error", { maximum: 2 }],
+        "react/jsx-max-props-per-line": "error",
         "react/jsx-no-duplicate-props": "error",
         quotes: ["error", "single", { allowTemplateLiterals: true }]
     }
