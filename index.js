@@ -48,7 +48,7 @@ module.exports = {
         "comma-dangle": ["error", "always-multiline"],
         "no-multiple-empty-lines": ["error", { "max": 1, "maxBOF": 0, "maxEOF": 0 }],
         "no-useless-concat": "error",
-        "object-curly-spacing": "error",
+        "object-curly-spacing": ["error", "always"],
         "object-curly-newline": ["error", { multiline: true, minProperties: 2 }],
         "semi-spacing": "error",
         "eol-last": "error",
