@@ -28,7 +28,7 @@ module.exports = {
         "comma-dangle": ["error", "always-multiline"],
         "eol-last": "error",
         "indent": ["error", 4, { SwitchCase: 1 }],
-        "max-len": ["error", { code: 140, ignoreUrls: true, ignoreStrings: true, ignoreTemplateLiterals: true }],
+        "max-len": ["error", { code: 140, ignoreUrls: true, ignoreStrings: true, ignoreTemplateLiterals: true, ignoreComments: true }],
         "no-console": ["error", { allow: ["warn", "error"] }],
         "no-duplicate-imports": "error",
         "no-else-return": "error",
