@@ -1,5 +1,22 @@
 # Ibexa ESLint config
 
+## How To Lint and Format Code with ESLint in Visual Studio Code
+
+### Install ESLint Extension
+Navigate to Extensions tab and search for ESLint. Install it.
+
+### Format on Save
+Use the command palette to open **Preferences: Open Workspace Settings (JSON)**. Paste this fragment in opened file:
+```
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": ["javascript"]
+}
+```
+Save and restart editor.
+
 ## COPYRIGHT
 Copyright (C) 1999-2021 Ibexa AS (formerly eZ Systems AS). All rights reserved.
 

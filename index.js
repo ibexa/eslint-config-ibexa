@@ -1,5 +1,5 @@
 module.exports = {
-    plugins: ["react"],
+    plugins: ["react", "prettier"],
     extends: ["eslint:recommended", "plugin:react/recommended"],
     settings: {
         react: {
@@ -23,12 +23,21 @@ module.exports = {
         ecmaVersion: 12
     },
     rules: {
+        "prettier/prettier": ["error", {
+            "printWidth": 140,
+            "tabWidth": 4,
+            "useTabs": false,
+            "semi": true,
+            "singleQuote": true,
+            "quoteProps": "as-needed",
+            "jsxSingleQuote": false,
+            "trailingComma": "all",
+            "bracketSpacing": true,
+            "bracketSameLine": false,
+            "arrowParens": "always"
+        }],
         "array-callback-return": "error",
-        "arrow-parens": "error",
-        "comma-dangle": ["error", "always-multiline"],
         "eol-last": "error",
-        "indent": ["error", 4, { SwitchCase: 1 }],
-        "max-len": ["error", { code: 140, ignoreUrls: true, ignoreStrings: true, ignoreTemplateLiterals: true, ignoreComments: true }],
         "no-console": ["error", { allow: ["warn", "error"] }],
         "no-duplicate-imports": "error",
         "no-else-return": "error",
@@ -51,8 +60,6 @@ module.exports = {
         "quotes": ["error", "single", { allowTemplateLiterals: true }],
         "radix": "error",
         "semi-spacing": "error",
-        "semi": "error",
-        "space-before-function-paren": ["error", "never"],
         "react/button-has-type": "error",
         "react/default-props-match-prop-types": "error",
         "react/jsx-boolean-value": ["error", "always"],
@@ -62,7 +69,6 @@ module.exports = {
         "react/jsx-equals-spacing": "error",
         "react/jsx-first-prop-new-line": "error",
         "react/jsx-key": "error",
-        "react/jsx-max-props-per-line": "error",
         "react/jsx-no-duplicate-props": "error",
         "react/no-array-index-key": "error",
         "react/no-typos": "error",
