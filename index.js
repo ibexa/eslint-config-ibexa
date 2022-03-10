@@ -54,7 +54,7 @@ module.exports = {
         "no-var": "error",
         "object-curly-spacing": ["error", "always"],
         "prefer-const": "error",
-        "prefer-destructuring": "error",
+        "prefer-destructuring": ["error", {array: false, object: true}, {enforceForRenamedProperties: false}],
         "prefer-object-spread": "error",
         "prefer-template": "error",
         "quotes": ["error", "single", { allowTemplateLiterals: true }],
