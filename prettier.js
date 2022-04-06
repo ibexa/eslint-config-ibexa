@@ -1,4 +1,4 @@
-{
+module.exports = {
     "printWidth": 140,
     "tabWidth": 4,
     "useTabs": false,
@@ -10,4 +10,4 @@
     "bracketSpacing": true,
     "bracketSameLine": false,
     "arrowParens": "always"
-}
+};
