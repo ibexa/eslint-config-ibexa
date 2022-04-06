@@ -8,7 +8,6 @@
         "eslint-plugin-react": "7.28.0",
         "prettier": "2.5.1"
     },
-    "main": "./index.js",
     "exports": {
       "./prettier": "./prettier.js"
     }
