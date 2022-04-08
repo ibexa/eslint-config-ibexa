@@ -9,6 +9,7 @@
         "prettier": "2.5.1"
     },
     "exports": {
+        ".": "./index.js",
         "./eslint": "./index.js",
         "./prettier": "./prettier.js"
     }
