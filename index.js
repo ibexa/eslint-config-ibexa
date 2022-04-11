@@ -1,5 +1,5 @@
 module.exports = {
-    plugins: ["react", "prettier"],
+    plugins: ["react"],
     extends: ["eslint:recommended", "plugin:react/recommended"],
     settings: {
         react: {
@@ -23,19 +23,6 @@ module.exports = {
         ecmaVersion: 12
     },
     rules: {
-        "prettier/prettier": ["error", {
-            "printWidth": 140,
-            "tabWidth": 4,
-            "useTabs": false,
-            "semi": true,
-            "singleQuote": true,
-            "quoteProps": "as-needed",
-            "jsxSingleQuote": false,
-            "trailingComma": "all",
-            "bracketSpacing": true,
-            "bracketSameLine": false,
-            "arrowParens": "always"
-        }],
         "array-callback-return": "error",
         "eol-last": "error",
         "no-console": ["error", { allow: ["warn", "error"] }],
