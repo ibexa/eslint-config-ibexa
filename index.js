@@ -41,7 +41,16 @@ module.exports = {
         "no-var": "error",
         "object-curly-spacing": ["error", "always"],
         "prefer-const": "error",
-        "prefer-destructuring": ["error", { array: false, object: true }, { enforceForRenamedProperties: false }],
+        "prefer-destructuring": ["error", {
+            "VariableDeclarator": {
+                "array": false,
+                "object": true
+            },
+            "AssignmentExpression": {
+                "array": false,
+                "object": false
+            }
+        }, { enforceForRenamedProperties: false }],
         "prefer-object-spread": "error",
         "prefer-template": "error",
         "quotes": ["error", "single", { allowTemplateLiterals: true }],
