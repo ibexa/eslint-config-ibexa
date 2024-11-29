@@ -81,13 +81,31 @@ module.exports = {
         {
             files: ["*.ts", "*.tsx"],
             parserOptions: {
-                project: "./tseslint.json",
+                project: './tsconfig.eslint.json',
             },
-            plugins: ["react", "@typescript-eslint"],
-            extends: ["plugin:@typescript-eslint/recommended-type-checked"],
+            extends: [
+                "eslint:recommended",
+                "plugin:@typescript-eslint/strict-type-checked",
+                "plugin:@typescript-eslint/stylistic-type-checked"
+            ],
             rules: {
                 ...baseRules,
                 ...{
+                    "@typescript-eslint/no-unsafe-type-assertion": "error",
+                    "@typescript-eslint/no-redundant-type-constituents": "off",
+                    "@typescript-eslint/typedef": [
+                        "error",
+                        {
+                        "arrayDestructuring": true,
+                        "arrowParameter": true,
+                        "memberVariableDeclaration": true,
+                        "objectDestructuring": true,
+                        "parameter": true,
+                        "propertyDeclaration": true,
+                        "variableDeclaration": false,
+                        "variableDeclarationIgnoreFunction": false,
+                        },
+                    ],
                     "react/style-prop-object": "error",
                     "react/require-default-props": "off"
                 }
