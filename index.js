@@ -80,8 +80,11 @@ module.exports = {
         },
         {
             files: ["*.ts", "*.tsx"],
+            parserOptions: {
+                project: "./tseslint.json",
+            },
             plugins: ["react", "@typescript-eslint"],
-            extends: ["plugin:@typescript-eslint/recommended"],
+            extends: ["plugin:@typescript-eslint/recommended-type-checked"],
             rules: {
                 ...baseRules,
                 ...{
