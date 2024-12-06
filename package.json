@@ -12,5 +12,9 @@
         ".": "./index.js",
         "./eslint": "./index.js",
         "./prettier": "./prettier.js"
+    },
+    "scripts": {
+        "plugins:compare": "node tests/compare.plugins.js",
+        "plugins:update": "node tests/update.plugins.js"
     }
 }
