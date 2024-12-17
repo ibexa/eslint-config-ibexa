@@ -55,7 +55,7 @@ const baseRules = {
     "@stylistic/jsx-curly-newline": "off", // prettier conflict
 };
 
-const advancedRules = {
+const strictRules = {
     "camelcase": "error",
     "curly": "error",
     "default-case": "error",
@@ -156,7 +156,7 @@ module.exports = {
             ],
             rules: {
                 ...baseRules,
-                ...advancedRules,
+                ...strictRules,
                 ...{
                     "@typescript-eslint/no-unsafe-type-assertion": "error",
                     "@typescript-eslint/no-redundant-type-constituents": "off",
