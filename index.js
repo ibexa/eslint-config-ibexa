@@ -43,6 +43,7 @@ const baseRules = {
     "react/self-closing-comp": "error",
     "react/style-prop-object": "error",
     "@stylistic/indent": "off", // prettier conflict
+    "@stylistic/indent-binary-ops": "off", // prettier conflict
     "@stylistic/jsx-indent-props": "off", // prettier conflict
     "@stylistic/semi": "off", // prettier conflict
     "@stylistic/arrow-parens": "off", // prettier conflict
