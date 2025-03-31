@@ -1,4 +1,8 @@
-const stylistic = require('@stylistic/eslint-plugin');
+import globals from 'globals';
+import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
+import tseslint from 'typescript-eslint';
+import react from 'eslint-plugin-react';
 
 const baseRules = {
     "array-callback-return": "error",
@@ -10,10 +14,7 @@ const baseRules = {
     "no-shadow": "error",
     "no-template-curly-in-string": "error",
     "no-unreachable-loop": "error",
-    "no-unsafe-optional-chaining": "error",
     "no-useless-concat": "error",
-    "no-var": "error",
-    "prefer-const": "error",
     "prefer-destructuring": ["error", {
         "VariableDeclarator": {
             "array": false,
@@ -28,28 +29,24 @@ const baseRules = {
     "prefer-template": "error",
     "radix": "error",
     "react/button-has-type": "error",
-    "react/default-props-match-prop-types": "error",
     "react/jsx-boolean-value": ["error", "always"],
     "react/jsx-closing-bracket-location": "error",
     "react/jsx-closing-tag-location": "error",
     "react/jsx-curly-spacing": "error",
     "react/jsx-equals-spacing": "error",
-    "react/jsx-first-prop-new-line": "error",
+    "react/jsx-first-prop-new-line": ["error", "multiline-multiprop"],
     "react/jsx-key": "error",
     "react/jsx-no-duplicate-props": "error",
     "react/no-array-index-key": "error",
     "react/no-typos": "error",
-    "react/require-default-props": "error",
+    "react/prop-types": "error",
     "react/self-closing-comp": "error",
     "react/style-prop-object": "error",
     "@stylistic/indent": "off", // prettier conflict
-    "@stylistic/indent-binary-ops": "off", // prettier conflict
     "@stylistic/jsx-indent-props": "off", // prettier conflict
     "@stylistic/semi": "off", // prettier conflict
     "@stylistic/arrow-parens": "off", // prettier conflict
     "@stylistic/spaced-comment": "off", // @Desc conflict
-    "@stylistic/brace-style": ["error", "1tbs"],
-    "@stylistic/quote-props": ["error", "as-needed"],
     "@stylistic/multiline-ternary": "off", // prettier conflict
     "@stylistic/operator-linebreak": "off", // prettier conflict, unfortunatelly
     "@stylistic/jsx-one-expression-per-line": "off",
@@ -69,7 +66,6 @@ const strictRules = {
     "max-classes-per-file": "error",
     "max-depth": ["error", { "max": 4 }],
     "max-lines": ["error", { "max": 300 }],
-    "max-lines-per-function": ["error", { "max": 50 }],
     "no-alert": "error",
     "no-array-constructor": "error",
     "no-await-in-loop": "error",
@@ -82,7 +78,7 @@ const strictRules = {
     "no-lone-blocks": "error",
     "no-lonely-if": "error",
     "no-loop-func": "error",
-    "no-magic-numbers": "error",
+    "no-magic-numbers": ["error", { "ignore": [0] }],
     "no-multi-assign": "error",
     "no-multi-str": "error",
     "no-negated-condition": "error",
@@ -107,7 +103,7 @@ const strictRules = {
     "require-atomic-updates": "error",
     "require-await": "error",
     "sort-imports": ["error", { "allowSeparatedGroups": true }],
-    "sort-keys": "error",
+    "sort-keys": ["error", "asc", { "ignoreComputedKeys": true }],
     "@stylistic/function-call-spacing": "error",
     "@stylistic/jsx-pascal-case": "error",
     "@stylistic/jsx-props-no-multi-spaces": "error",
@@ -116,68 +112,73 @@ const strictRules = {
     "@stylistic/switch-colon-spacing": "error",
 };
 
-module.exports = {
-    settings: {
-        react: {
-            version: "16.x"
-        }
-    },
-    globals: {
-        PropTypes: "readonly"
-    },
-    env: {
-        browser: true,
-        commonjs: true,
-        es6: true,
-        node: true
-    },
-    parserOptions: {
-        ecmaFeatures: {
-            jsx: true
+const configTS = tseslint.config(
+    js.configs.recommended,
+    tseslint.configs.strictTypeChecked,
+    tseslint.configs.stylisticTypeChecked,
+    stylistic.configs.customize({
+        braceStyle: '1tbs',
+        quoteProps: 'as-needed',
+        indent: 4,
+        semi: true,
+    }),
+    {
+        rules: {
+            ...baseRules,
+            ...strictRules,
+            "@typescript-eslint/no-unsafe-type-assertion": "error",
+            "@typescript-eslint/no-redundant-type-constituents": "off",
+            // TODO: check if needed?
+            // "@typescript-eslint/typedef": [
+            //     "error",
+            //     {
+            //         "arrayDestructuring": true,
+            //         "arrowParameter": true,
+            //         "memberVariableDeclaration": true,
+            //         "objectDestructuring": true,
+            //         "parameter": true,
+            //         "propertyDeclaration": true,
+            //         "variableDeclaration": false,
+            //         "variableDeclarationIgnoreFunction": false,
+            //     },
+            // ],
         },
-        sourceType: "module",
-        ecmaVersion: 12
     },
-    overrides: [
-        {
-            files: ["*.js"],
-            plugins: ["react", "@stylistic"],
-            extends: ["eslint:recommended", "plugin:react/recommended", "plugin:@stylistic/recommended-extends"],
-            rules: baseRules
-        },
-        {
-            files: ["*.ts", "*.tsx"],
+    {
+        languageOptions: {
             parserOptions: {
                 project: './tsconfig.eslint.json',
             },
-            extends: [
-                "eslint:recommended",
-                "plugin:@typescript-eslint/strict-type-checked",
-                "plugin:@typescript-eslint/stylistic-type-checked"
-            ],
-            rules: {
-                ...baseRules,
-                ...strictRules,
-                ...{
-                    "@typescript-eslint/no-unsafe-type-assertion": "error",
-                    "@typescript-eslint/no-redundant-type-constituents": "off",
-                    "@typescript-eslint/typedef": [
-                        "error",
-                        {
-                        "arrayDestructuring": true,
-                        "arrowParameter": true,
-                        "memberVariableDeclaration": true,
-                        "objectDestructuring": true,
-                        "parameter": true,
-                        "propertyDeclaration": true,
-                        "variableDeclaration": false,
-                        "variableDeclarationIgnoreFunction": false,
-                        },
-                    ],
-                    "react/style-prop-object": "error",
-                    "react/require-default-props": "off"
-                }
-            }
-        }
-    ]
-};
+        },
+    },
+);
+
+export default [
+    js.configs.recommended,
+    ...configTS,
+    {
+        files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
+        settings: {
+            react: {
+                version: 'detect',
+            },
+        },
+        languageOptions: {
+            sourceType: 'module',
+            parserOptions: {
+                ecmaFeatures: {
+                    modules: true,
+                },
+            },
+            globals: {
+                ...globals.browser,
+                ...globals.commonjs,
+                ...globals.builtin,
+                ...globals.node,
+            },
+        },
+        plugins: {
+            react,
+        },
+    },
+];
