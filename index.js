@@ -4,6 +4,8 @@ import stylistic from '@stylistic/eslint-plugin';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 
+import ibexaRules from './src/custom-rules/index.js';
+
 const baseRules = {
     "array-callback-return": "error",
     "no-console": ["error", { allow: ["warn", "error"] }],
@@ -123,6 +125,7 @@ const configTS = tseslint.config(
         semi: true,
     }),
     {
+        files: ['**/*.ts', '**/*.tsx'],
         rules: {
             ...baseRules,
             ...strictRules,
@@ -145,6 +148,7 @@ const configTS = tseslint.config(
         },
     },
     {
+        files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
             parserOptions: {
                 project: './tsconfig.eslint.json',
@@ -156,6 +160,21 @@ const configTS = tseslint.config(
 export default [
     js.configs.recommended,
     ...configTS,
+    {
+        files: ['**/*.js', '**/*.ts'],
+        rules: {
+            "max-lines-per-function": ["error", { "max": 50 }],
+        }
+    },
+    {
+        files: ['**/*.jsx', '**/*.tsx'],
+        plugins: {
+            ibexa: ibexaRules,
+        },
+        rules: {
+            "ibexa/max-lines-per-function-jsx": ["error", { "max": 50 }],
+        }
+    },
     {
         files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
         settings: {

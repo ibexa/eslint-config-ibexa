@@ -4,6 +4,7 @@
     "repository": "git@github.com:ibexa/eslint-config-ibexa.git",
     "private": true,
     "dependencies": {
+        "@eslint-community/eslint-utils": "^4.5.1",
         "@stylistic/eslint-plugin": "4.2",
         "@typescript-eslint/eslint-plugin": "8.28",
         "@typescript-eslint/parser": "8.28",
