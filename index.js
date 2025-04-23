@@ -17,6 +17,7 @@ const baseRules = {
     "no-template-curly-in-string": "error",
     "no-unreachable-loop": "error",
     "no-useless-concat": "error",
+    "no-unused-vars": ["error", { "caughtErrors": "none" }],
     "prefer-destructuring": ["error", {
         "VariableDeclarator": {
             "array": false,
@@ -114,10 +115,27 @@ const strictRules = {
     "@stylistic/switch-colon-spacing": "error",
 };
 
-const configTS = tseslint.config(
+const configTS = tseslint.config({
+    files: ['**/*.ts', '**/*.tsx'],
+    extends: [
+        tseslint.configs.strictTypeChecked,
+        tseslint.configs.stylisticTypeChecked,
+    ],
+    rules: {
+        ...strictRules,
+        "@typescript-eslint/no-unsafe-type-assertion": "error",
+        "@typescript-eslint/no-redundant-type-constituents": "off",
+    },
+    languageOptions: {
+        parserOptions: {
+            projectService: true,
+            tsconfigRootDir: process.env.INIT_CWD,
+        },
+    },
+});
+
+export default [
     js.configs.recommended,
-    tseslint.configs.strictTypeChecked,
-    tseslint.configs.stylisticTypeChecked,
     stylistic.configs.customize({
         braceStyle: '1tbs',
         quoteProps: 'as-needed',
@@ -125,43 +143,20 @@ const configTS = tseslint.config(
         semi: true,
     }),
     {
-        files: ['**/*.ts', '**/*.tsx'],
         rules: {
             ...baseRules,
-            ...strictRules,
-            "@typescript-eslint/no-unsafe-type-assertion": "error",
-            "@typescript-eslint/no-redundant-type-constituents": "off",
-            // TODO: check if needed?
-            // "@typescript-eslint/typedef": [
-            //     "error",
-            //     {
-            //         "arrayDestructuring": true,
-            //         "arrowParameter": true,
-            //         "memberVariableDeclaration": true,
-            //         "objectDestructuring": true,
-            //         "parameter": true,
-            //         "propertyDeclaration": true,
-            //         "variableDeclaration": false,
-            //         "variableDeclarationIgnoreFunction": false,
-            //     },
-            // ],
         },
     },
-    {
-        files: ['**/*.ts', '**/*.tsx'],
-        languageOptions: {
-            parserOptions: {
-                project: './tsconfig.eslint.json',
-            },
-        },
-    },
-);
-
-export default [
-    js.configs.recommended,
     ...configTS,
     {
-        files: ['**/*.js', '**/*.ts'],
+        files: ['**/*.js', '**/*.jsx'],
+        ...react.configs.flat.recommended,
+        languageOptions: {
+            ...react.configs.flat.recommended.languageOptions,
+        },
+    },
+    {
+        files: ['**/*.ts'],
         rules: {
             "max-lines-per-function": ["error", { "max": 50 }],
         }
@@ -179,13 +174,14 @@ export default [
         files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
         settings: {
             react: {
-                version: 'detect',
+                version: '18.2.0',
             },
         },
         languageOptions: {
             sourceType: 'module',
             parserOptions: {
                 ecmaFeatures: {
+                    jsx: true,
                     modules: true,
                 },
             },
@@ -194,6 +190,7 @@ export default [
                 ...globals.commonjs,
                 ...globals.builtin,
                 ...globals.node,
+                PropTypes: 'readonly',
             },
         },
         plugins: {
