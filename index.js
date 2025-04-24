@@ -143,18 +143,26 @@ export default [
         semi: true,
     }),
     {
-        rules: {
-            ...baseRules,
-        },
-    },
-    ...configTS,
-    {
         files: ['**/*.js', '**/*.jsx'],
         ...react.configs.flat.recommended,
         languageOptions: {
             ...react.configs.flat.recommended.languageOptions,
         },
     },
+    {
+        rules: {
+            ...baseRules,
+        },
+        plugins: {
+            react,
+        },
+        settings: {
+            react: {
+                version: '18.2.0',
+            },
+        },
+    },
+    ...configTS,
     {
         files: ['**/*.ts'],
         rules: {
@@ -172,11 +180,6 @@ export default [
     },
     {
         files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
-        settings: {
-            react: {
-                version: '18.2.0',
-            },
-        },
         languageOptions: {
             sourceType: 'module',
             parserOptions: {
@@ -192,9 +195,6 @@ export default [
                 ...globals.node,
                 PropTypes: 'readonly',
             },
-        },
-        plugins: {
-            react,
         },
     },
 ];

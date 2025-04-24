@@ -19,6 +19,9 @@
     "exports": {
         ".": "./index.js",
         "./eslint": "./index.js",
-        "./prettier": "./prettier.js"
+        "./prettier": {
+            "require": "./prettier.cjs",
+            "import": "./prettier.mjs"
+        }
     }
 }
