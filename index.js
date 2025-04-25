@@ -153,14 +153,6 @@ export default [
         rules: {
             ...baseRules,
         },
-        plugins: {
-            react,
-        },
-        settings: {
-            react: {
-                version: '18.2.0',
-            },
-        },
     },
     ...configTS,
     {
@@ -196,5 +188,13 @@ export default [
                 PropTypes: 'readonly',
             },
         },
+        plugins: {
+            react,
+        },
+        settings: {
+            react: {
+                version: '18.2.0',
+            },
+        }
     },
 ];
