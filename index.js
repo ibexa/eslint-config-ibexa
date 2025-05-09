@@ -4,7 +4,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 
-import ibexaRules from './src/custom-rules/index.js';
+import ibexaPlugin from './src/custom-rules/index.js';
 
 const baseRules = {
     "array-callback-return": "error",
@@ -31,6 +31,9 @@ const baseRules = {
     "prefer-object-spread": "error",
     "prefer-template": "error",
     "radix": "error",
+};
+
+const reactRules = {
     "react/button-has-type": "error",
     "react/jsx-boolean-value": ["error", "always"],
     "react/jsx-closing-bracket-location": "error",
@@ -45,6 +48,9 @@ const baseRules = {
     "react/prop-types": "error",
     "react/self-closing-comp": "error",
     "react/style-prop-object": "error",
+};
+
+const stylisticRules = {
     "@stylistic/indent": "off", // prettier conflict
     "@stylistic/jsx-indent-props": "off", // prettier conflict
     "@stylistic/semi": "off", // prettier conflict
@@ -115,86 +121,149 @@ const strictRules = {
     "@stylistic/switch-colon-spacing": "error",
 };
 
-const configTS = tseslint.config({
-    files: ['**/*.ts', '**/*.tsx'],
-    extends: [
-        tseslint.configs.strictTypeChecked,
-        tseslint.configs.stylisticTypeChecked,
-    ],
-    rules: {
-        ...strictRules,
-        "@typescript-eslint/no-unsafe-type-assertion": "error",
-        "@typescript-eslint/no-redundant-type-constituents": "off",
-    },
-    languageOptions: {
-        parserOptions: {
-            projectService: true,
-            tsconfigRootDir: process.env.INIT_CWD,
-        },
-    },
-});
+const stylisticStrictRules = {
+    "@stylistic/indent": "off", // prettier conflict
+    "@stylistic/jsx-indent-props": "off", // prettier conflict
+    "@stylistic/semi": "off", // prettier conflict
+    "@stylistic/arrow-parens": "off", // prettier conflict
+    "@stylistic/spaced-comment": "off", // @Desc conflict
+    "@stylistic/multiline-ternary": "off", // prettier conflict
+    "@stylistic/operator-linebreak": "off", // prettier conflict, unfortunatelly
+    "@stylistic/jsx-one-expression-per-line": "off",
+    "@stylistic/jsx-curly-newline": "off", // prettier conflict
+};
 
-export default [
-    js.configs.recommended,
-    stylistic.configs.customize({
-        braceStyle: '1tbs',
-        quoteProps: 'as-needed',
-        indent: 4,
-        semi: true,
-    }),
-    {
-        files: ['**/*.js', '**/*.jsx'],
-        ...react.configs.flat.recommended,
-        languageOptions: {
-            ...react.configs.flat.recommended.languageOptions,
+const baseConfig = {
+    languageOptions: {
+        sourceType: 'module',
+        parserOptions: {
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+        globals: {
+            ...globals.browser,
+            ...globals.commonjs,
+            ...globals.builtin,
+            ...globals.node,
         },
     },
-    {
-        rules: {
-            ...baseRules,
+};
+
+const reactConfig = {
+    languageOptions: {
+        sourceType: 'module',
+        parserOptions: {
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+        globals: {
+            ...globals.browser,
+            ...globals.commonjs,
+            ...globals.builtin,
+            ...globals.node,
+            PropTypes: 'readonly',
         },
     },
-    ...configTS,
-    {
-        files: ['**/*.ts'],
-        rules: {
-            "max-lines-per-function": ["error", { "max": 50 }],
-        }
+    plugins: {
+        react,
     },
-    {
-        files: ['**/*.jsx', '**/*.tsx'],
-        plugins: {
-            ibexa: ibexaRules,
+    settings: {
+        react: {
+            version: '18.2.0',
         },
-        rules: {
-            "ibexa/max-lines-per-function-jsx": ["error", { "max": 50 }],
-        }
-    },
-    {
-        files: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
-        languageOptions: {
-            sourceType: 'module',
-            parserOptions: {
-                ecmaFeatures: {
-                    jsx: true,
-                    modules: true,
+    }
+}
+
+const getConfig = (options = {}) => {
+    const includeBaseRules = options.base ?? true;
+    const includeStylisticRules = options.stylistic ?? true;
+    const includeReactRules = options.react ?? true;
+    const includeTSRules = options.ts ?? true;
+    const flatConfig = [];
+
+    if (includeBaseRules) {
+        flatConfig.push(
+            js.configs.recommended,
+            {
+                files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+                rules: {
+                    ...baseRules,
+                    ...(includeStylisticRules ? stylisticRules : {}),
+                    ...(includeReactRules ? reactRules : {}),
                 },
+                ...baseConfig,
             },
-            globals: {
-                ...globals.browser,
-                ...globals.commonjs,
-                ...globals.builtin,
-                ...globals.node,
-                PropTypes: 'readonly',
+        );
+    }
+
+    if (includeStylisticRules) {
+        flatConfig.push(
+            stylistic.configs.customize({
+                arrowParens: true,
+                braceStyle: '1tbs',
+                quoteProps: 'as-needed',
+                indent: 4,
+                semi: true,
+            }),
+        );
+    }
+
+    if (includeReactRules) {
+        flatConfig.push(
+            {
+                files: ['**/*.js', '**/*.cjs', '**/*.mjs', '**/*.jsx', ...(includeTSRules ? ['**/*.tsx'] : [])],
+                ...react.configs.flat.recommended,
+                ...reactConfig,
             },
-        },
-        plugins: {
-            react,
-        },
-        settings: {
-            react: {
-                version: '18.2.0',
+        );
+
+        flatConfig.push(
+            {
+                files: ['**/*.jsx', ...(includeTSRules ? ['**/*.tsx'] : [])],
+                rules: {
+                    "ibexa/max-lines-per-function-jsx": ["error", { "max": 50 }],
+                },
+                plugins: {
+                    ibexa: ibexaPlugin,
+                },
+                ...reactConfig,
             },
-        }
-    },
-];
+        );
+    }
+
+    if (includeTSRules) {
+        flatConfig.push(
+            ...tseslint.config({
+                files: ['**/*.ts', ...(includeTSRules ? ['**/*.tsx'] : [])],
+                extends: [
+                    tseslint.configs.strictTypeChecked,
+                    ...(includeStylisticRules ? tseslint.configs.stylisticTypeChecked : []),
+                ],
+                rules: {
+                    ...strictRules,
+                    ...(includeStylisticRules ? stylisticStrictRules : {}),
+                    "@typescript-eslint/no-unsafe-type-assertion": "error",
+                    "@typescript-eslint/no-redundant-type-constituents": "off",
+                },
+                languageOptions: {
+                    parserOptions: {
+                        projectService: true,
+                        tsconfigRootDir: process.env.INIT_CWD,
+                    },
+                },
+            }),
+            {
+                files: ['**/*.ts'],
+                rules: {
+                    "max-lines-per-function": ["error", { "max": 50 }],
+                }
+            },
+        );
+    }
+
+    return flatConfig;
+}
+
+export default getConfig;
