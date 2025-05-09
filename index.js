@@ -225,10 +225,11 @@ const getConfig = (options = {}) => {
                 rules: {
                     "ibexa/max-lines-per-function-jsx": ["error", { "max": 50 }],
                 },
+                ...reactConfig,
                 plugins: {
+                    ...reactConfig.plugins,
                     ibexa: ibexaPlugin,
                 },
-                ...reactConfig,
             },
         );
     }
