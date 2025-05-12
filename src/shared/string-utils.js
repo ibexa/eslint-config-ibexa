@@ -6,8 +6,8 @@
  * @returns {string} The converted string
  */
 export function upperCaseFirst(string) {
-	if (string.length <= 1) {
-		return string.toUpperCase();
-	}
-	return string[0].toUpperCase() + string.slice(1);
+    if (string.length <= 1) {
+        return string.toUpperCase();
+    }
+    return string[0].toUpperCase() + string.slice(1);
 };
