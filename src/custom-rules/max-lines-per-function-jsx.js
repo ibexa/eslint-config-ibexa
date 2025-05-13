@@ -1,4 +1,9 @@
-// Copied from https://github.com/eslint/eslint/blob/e52b98bf25d882da4efd5559ce5974b6697cf701/lib/rules/max-lines-per-function.js
+/**
+ * Copied from https://github.com/eslint/eslint/blob/e52b98bf25d882da4efd5559ce5974b6697cf701/lib/rules/max-lines-per-function.js
+ * Added method: isReactComponent (lines 144-146)
+ * Modified method: processFunction (lines 187-189)
+ */
+
 
 /**
  * @fileoverview A rule to set the maximum number of line of code in a function.
