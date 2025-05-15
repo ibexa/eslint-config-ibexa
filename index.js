@@ -1,4 +1,10 @@
-const stylistic = require('@stylistic/eslint-plugin');
+import globals from 'globals';
+import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
+import tseslint from 'typescript-eslint';
+import react from 'eslint-plugin-react';
+
+import ibexaPlugin from './src/custom-rules/index.js';
 
 const baseRules = {
     "array-callback-return": "error",
@@ -10,10 +16,8 @@ const baseRules = {
     "no-shadow": "error",
     "no-template-curly-in-string": "error",
     "no-unreachable-loop": "error",
-    "no-unsafe-optional-chaining": "error",
     "no-useless-concat": "error",
-    "no-var": "error",
-    "prefer-const": "error",
+    "no-unused-vars": ["error", { "caughtErrors": "none" }],
     "prefer-destructuring": ["error", {
         "VariableDeclarator": {
             "array": false,
@@ -27,29 +31,31 @@ const baseRules = {
     "prefer-object-spread": "error",
     "prefer-template": "error",
     "radix": "error",
+};
+
+const reactRules = {
     "react/button-has-type": "error",
-    "react/default-props-match-prop-types": "error",
     "react/jsx-boolean-value": ["error", "always"],
     "react/jsx-closing-bracket-location": "error",
     "react/jsx-closing-tag-location": "error",
     "react/jsx-curly-spacing": "error",
     "react/jsx-equals-spacing": "error",
-    "react/jsx-first-prop-new-line": "error",
+    "react/jsx-first-prop-new-line": ["error", "multiline-multiprop"],
     "react/jsx-key": "error",
     "react/jsx-no-duplicate-props": "error",
     "react/no-array-index-key": "error",
     "react/no-typos": "error",
-    "react/require-default-props": "error",
+    "react/prop-types": "error",
     "react/self-closing-comp": "error",
     "react/style-prop-object": "error",
+};
+
+const stylisticRules = {
     "@stylistic/indent": "off", // prettier conflict
-    "@stylistic/indent-binary-ops": "off", // prettier conflict
     "@stylistic/jsx-indent-props": "off", // prettier conflict
     "@stylistic/semi": "off", // prettier conflict
     "@stylistic/arrow-parens": "off", // prettier conflict
     "@stylistic/spaced-comment": "off", // @Desc conflict
-    "@stylistic/brace-style": ["error", "1tbs"],
-    "@stylistic/quote-props": ["error", "as-needed"],
     "@stylistic/multiline-ternary": "off", // prettier conflict
     "@stylistic/operator-linebreak": "off", // prettier conflict, unfortunatelly
     "@stylistic/jsx-one-expression-per-line": "off",
@@ -69,7 +75,6 @@ const strictRules = {
     "max-classes-per-file": "error",
     "max-depth": ["error", { "max": 4 }],
     "max-lines": ["error", { "max": 300 }],
-    "max-lines-per-function": ["error", { "max": 50 }],
     "no-alert": "error",
     "no-array-constructor": "error",
     "no-await-in-loop": "error",
@@ -82,7 +87,7 @@ const strictRules = {
     "no-lone-blocks": "error",
     "no-lonely-if": "error",
     "no-loop-func": "error",
-    "no-magic-numbers": "error",
+    "no-magic-numbers": ["error", { "ignore": [0] }],
     "no-multi-assign": "error",
     "no-multi-str": "error",
     "no-negated-condition": "error",
@@ -107,7 +112,7 @@ const strictRules = {
     "require-atomic-updates": "error",
     "require-await": "error",
     "sort-imports": ["error", { "allowSeparatedGroups": true }],
-    "sort-keys": "error",
+    "sort-keys": ["error", "asc", { "ignoreComputedKeys": true }],
     "@stylistic/function-call-spacing": "error",
     "@stylistic/jsx-pascal-case": "error",
     "@stylistic/jsx-props-no-multi-spaces": "error",
@@ -116,68 +121,150 @@ const strictRules = {
     "@stylistic/switch-colon-spacing": "error",
 };
 
-module.exports = {
+const stylisticStrictRules = {
+    "@stylistic/indent": "off", // prettier conflict
+    "@stylistic/jsx-indent-props": "off", // prettier conflict
+    "@stylistic/semi": "off", // prettier conflict
+    "@stylistic/arrow-parens": "off", // prettier conflict
+    "@stylistic/spaced-comment": "off", // @Desc conflict
+    "@stylistic/multiline-ternary": "off", // prettier conflict
+    "@stylistic/operator-linebreak": "off", // prettier conflict, unfortunatelly
+    "@stylistic/jsx-one-expression-per-line": "off",
+    "@stylistic/jsx-curly-newline": "off", // prettier conflict
+};
+
+const baseConfig = {
+    languageOptions: {
+        sourceType: 'module',
+        parserOptions: {
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+        globals: {
+            ...globals.browser,
+            ...globals.commonjs,
+            ...globals.builtin,
+            ...globals.node,
+        },
+    },
+};
+
+const reactConfig = {
+    languageOptions: {
+        sourceType: 'module',
+        parserOptions: {
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+        globals: {
+            ...globals.browser,
+            ...globals.commonjs,
+            ...globals.builtin,
+            ...globals.node,
+            PropTypes: 'readonly',
+        },
+    },
+    plugins: {
+        react,
+    },
     settings: {
         react: {
-            version: "16.x"
-        }
-    },
-    globals: {
-        PropTypes: "readonly"
-    },
-    env: {
-        browser: true,
-        commonjs: true,
-        es6: true,
-        node: true
-    },
-    parserOptions: {
-        ecmaFeatures: {
-            jsx: true
+            version: '18.2.0',
         },
-        sourceType: "module",
-        ecmaVersion: 12
-    },
-    overrides: [
-        {
-            files: ["*.js"],
-            plugins: ["react", "@stylistic"],
-            extends: ["eslint:recommended", "plugin:react/recommended", "plugin:@stylistic/recommended-extends"],
-            rules: baseRules
-        },
-        {
-            files: ["*.ts", "*.tsx"],
-            parserOptions: {
-                project: './tsconfig.eslint.json',
+    }
+}
+
+const getConfig = (options = {}) => {
+    const includeBaseRules = options.base ?? true;
+    const includeStylisticRules = options.stylistic ?? true;
+    const includeReactRules = options.react ?? true;
+    const includeTSRules = options.ts ?? true;
+    const flatConfig = [];
+
+    if (includeBaseRules) {
+        flatConfig.push(
+            js.configs.recommended,
+            {
+                files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+                rules: {
+                    ...baseRules,
+                    ...(includeStylisticRules ? stylisticRules : {}),
+                    ...(includeReactRules ? reactRules : {}),
+                },
+                ...baseConfig,
             },
-            extends: [
-                "eslint:recommended",
-                "plugin:@typescript-eslint/strict-type-checked",
-                "plugin:@typescript-eslint/stylistic-type-checked"
-            ],
-            rules: {
-                ...baseRules,
-                ...strictRules,
-                ...{
+        );
+    }
+
+    if (includeStylisticRules) {
+        flatConfig.push(
+            stylistic.configs.customize({
+                arrowParens: true,
+                braceStyle: '1tbs',
+                quoteProps: 'as-needed',
+                indent: 4,
+                semi: true,
+            }),
+        );
+    }
+
+    if (includeReactRules) {
+        flatConfig.push(
+            {
+                files: ['**/*.js', '**/*.cjs', '**/*.mjs', '**/*.jsx', ...(includeTSRules ? ['**/*.tsx'] : [])],
+                ...react.configs.flat.recommended,
+                ...reactConfig,
+            },
+        );
+
+        flatConfig.push(
+            {
+                files: ['**/*.jsx', ...(includeTSRules ? ['**/*.tsx'] : [])],
+                rules: {
+                    "ibexa/max-lines-per-function-jsx": ["error", { "max": 50 }],
+                },
+                ...reactConfig,
+                plugins: {
+                    ...reactConfig.plugins,
+                    ibexa: ibexaPlugin,
+                },
+            },
+        );
+    }
+
+    if (includeTSRules) {
+        flatConfig.push(
+            ...tseslint.config({
+                files: ['**/*.ts', ...(includeTSRules ? ['**/*.tsx'] : [])],
+                extends: [
+                    tseslint.configs.strictTypeChecked,
+                    ...(includeStylisticRules ? tseslint.configs.stylisticTypeChecked : []),
+                ],
+                rules: {
+                    ...strictRules,
+                    ...(includeStylisticRules ? stylisticStrictRules : {}),
                     "@typescript-eslint/no-unsafe-type-assertion": "error",
                     "@typescript-eslint/no-redundant-type-constituents": "off",
-                    "@typescript-eslint/typedef": [
-                        "error",
-                        {
-                        "arrayDestructuring": true,
-                        "arrowParameter": true,
-                        "memberVariableDeclaration": true,
-                        "objectDestructuring": true,
-                        "parameter": true,
-                        "propertyDeclaration": true,
-                        "variableDeclaration": false,
-                        "variableDeclarationIgnoreFunction": false,
-                        },
-                    ],
-                    "react/style-prop-object": "error",
-                    "react/require-default-props": "off"
+                },
+                languageOptions: {
+                    parserOptions: {
+                        projectService: true,
+                        tsconfigRootDir: process.env.INIT_CWD,
+                    },
+                },
+            }),
+            {
+                files: ['**/*.ts'],
+                rules: {
+                    "max-lines-per-function": ["error", { "max": 50 }],
                 }
-            }
-        }
-    ]
-};
+            },
+        );
+    }
+
+    return flatConfig;
+}
+
+export default getConfig;
