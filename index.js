@@ -174,29 +174,26 @@ const reactConfig = {
             version: '18.2.0',
         },
     }
-}
+};
 
 const getConfig = (options = {}) => {
-    const includeBaseRules = options.base ?? true;
     const includeStylisticRules = options.stylistic ?? true;
     const includeReactRules = options.react ?? true;
     const includeTSRules = options.ts ?? true;
     const flatConfig = [];
 
-    if (includeBaseRules) {
-        flatConfig.push(
-            js.configs.recommended,
-            {
-                files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
-                rules: {
-                    ...baseRules,
-                    ...(includeStylisticRules ? stylisticRules : {}),
-                    ...(includeReactRules ? reactRules : {}),
-                },
-                ...baseConfig,
+    flatConfig.push(
+        js.configs.recommended,
+        {
+            files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+            rules: {
+                ...baseRules,
+                ...(includeStylisticRules ? stylisticRules : {}),
+                ...(includeReactRules ? reactRules : {}),
             },
-        );
-    }
+            ...baseConfig,
+        },
+    );
 
     if (includeStylisticRules) {
         flatConfig.push(
@@ -243,10 +240,19 @@ const getConfig = (options = {}) => {
                     ...(includeStylisticRules ? tseslint.configs.stylisticTypeChecked : []),
                 ],
                 rules: {
+                    ...baseRules,
                     ...strictRules,
                     ...(includeStylisticRules ? stylisticStrictRules : {}),
                     "@typescript-eslint/no-unsafe-type-assertion": "error",
                     "@typescript-eslint/no-redundant-type-constituents": "off",
+                    "@typescript-eslint/no-unused-vars": baseRules['no-unused-vars'],
+                    /* basic rules that are also in typescript-eslint, therefore they're switched off */
+                    "no-array-constructor": "off",
+                    "no-unused-expressions": "off",
+                    "no-unused-vars": "off",
+                    "no-useless-constructor": "off",
+                    "prefer-promise-reject-errors": "off",
+                    "require-await": "off",
                 },
                 languageOptions: {
                     parserOptions: {
@@ -265,6 +271,6 @@ const getConfig = (options = {}) => {
     }
 
     return flatConfig;
-}
+};
 
 export default getConfig;
