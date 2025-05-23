@@ -52,6 +52,7 @@ const reactRules = {
 
 const stylisticRules = {
     "@stylistic/indent": "off", // prettier conflict
+    "@stylistic/indent-binary-ops": "off", // prettier conflict
     "@stylistic/jsx-indent-props": "off", // prettier conflict
     "@stylistic/semi": "off", // prettier conflict
     "@stylistic/arrow-parens": "off", // prettier conflict
@@ -123,6 +124,7 @@ const strictRules = {
 
 const stylisticStrictRules = {
     "@stylistic/indent": "off", // prettier conflict
+    "@stylistic/indent-binary-ops": "off", // prettier conflict
     "@stylistic/jsx-indent-props": "off", // prettier conflict
     "@stylistic/semi": "off", // prettier conflict
     "@stylistic/arrow-parens": "off", // prettier conflict
@@ -182,19 +184,6 @@ const getConfig = (options = {}) => {
     const includeTSRules = options.ts ?? true;
     const flatConfig = [];
 
-    flatConfig.push(
-        js.configs.recommended,
-        {
-            files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
-            rules: {
-                ...baseRules,
-                ...(includeStylisticRules ? stylisticRules : {}),
-                ...(includeReactRules ? reactRules : {}),
-            },
-            ...baseConfig,
-        },
-    );
-
     if (includeStylisticRules) {
         flatConfig.push(
             stylistic.configs.customize({
@@ -230,6 +219,19 @@ const getConfig = (options = {}) => {
             },
         );
     }
+
+    flatConfig.push(
+        js.configs.recommended,
+        {
+            files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+            rules: {
+                ...baseRules,
+                ...(includeStylisticRules ? stylisticRules : {}),
+                ...(includeReactRules ? reactRules : {}),
+            },
+            ...baseConfig,
+        },
+    );
 
     if (includeTSRules) {
         flatConfig.push(
