@@ -1,6 +1,6 @@
 {
     "name": "@ibexa/eslint-config",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "repository": "git@github.com:ibexa/eslint-config-ibexa.git",
     "private": true,
     "type": "module",
