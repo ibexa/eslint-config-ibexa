@@ -247,6 +247,7 @@ const getConfig = (options = {}) => {
                     ...(includeStylisticRules ? stylisticStrictRules : {}),
                     "@typescript-eslint/no-unsafe-type-assertion": "error",
                     "@typescript-eslint/no-redundant-type-constituents": "off",
+                    "@typescript-eslint/no-unnecessary-type-parameters": "off",
                     "@typescript-eslint/no-unused-vars": baseRules['no-unused-vars'],
                     /* basic rules that are also in typescript-eslint, therefore they're switched off */
                     "no-array-constructor": "off",
