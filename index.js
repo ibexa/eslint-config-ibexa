@@ -249,6 +249,7 @@ const getConfig = (options = {}) => {
                     "@typescript-eslint/no-redundant-type-constituents": "off",
                     "@typescript-eslint/no-unnecessary-type-parameters": "off",
                     "@typescript-eslint/no-unused-vars": baseRules['no-unused-vars'],
+                    "@typescript-eslint/restrict-template-expressions": ["error", { "allowNumber": true }],
                     /* basic rules that are also in typescript-eslint, therefore they're switched off */
                     "no-array-constructor": "off",
                     "no-unused-expressions": "off",
