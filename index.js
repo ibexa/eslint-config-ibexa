@@ -4,8 +4,6 @@ import stylistic from '@stylistic/eslint-plugin';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 
-import ibexaPlugin from './src/custom-rules/index.js';
-
 const baseRules = {
     "array-callback-return": "error",
     "no-console": ["error", { allow: ["warn", "error"] }],
