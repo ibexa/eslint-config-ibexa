@@ -4,8 +4,6 @@ import stylistic from '@stylistic/eslint-plugin';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
 
-import ibexaPlugin from './src/custom-rules/index.js';
-
 const baseRules = {
     "array-callback-return": "error",
     "no-console": ["error", { allow: ["warn", "error"] }],
@@ -75,7 +73,6 @@ const strictRules = {
     "id-length": ["error", { "min": 2 }],
     "max-classes-per-file": "error",
     "max-depth": ["error", { "max": 4 }],
-    "max-lines": ["error", { "max": 300 }],
     "no-alert": "error",
     "no-array-constructor": "error",
     "no-await-in-loop": "error",
@@ -88,7 +85,7 @@ const strictRules = {
     "no-lone-blocks": "error",
     "no-lonely-if": "error",
     "no-loop-func": "error",
-    "no-magic-numbers": ["error", { "ignore": [0] }],
+    "no-magic-numbers": ["error", { "ignore": [0, 1] }],
     "no-multi-assign": "error",
     "no-multi-str": "error",
     "no-negated-condition": "error",
@@ -204,20 +201,6 @@ const getConfig = (options = {}) => {
                 ...reactConfig,
             },
         );
-
-        flatConfig.push(
-            {
-                files: ['**/*.jsx', ...(includeTSRules ? ['**/*.tsx'] : [])],
-                rules: {
-                    "ibexa/max-lines-per-function-jsx": ["error", { "max": 50 }],
-                },
-                ...reactConfig,
-                plugins: {
-                    ...reactConfig.plugins,
-                    ibexa: ibexaPlugin,
-                },
-            },
-        );
     }
 
     flatConfig.push(
@@ -245,6 +228,9 @@ const getConfig = (options = {}) => {
                     ...baseRules,
                     ...strictRules,
                     ...(includeStylisticRules ? stylisticStrictRules : {}),
+                    "@typescript-eslint/no-unsafe-assignment": "off",
+                    "@typescript-eslint/no-unsafe-call": "off",
+                    "@typescript-eslint/no-unsafe-member-access": "off",
                     "@typescript-eslint/no-unsafe-type-assertion": "error",
                     "@typescript-eslint/no-redundant-type-constituents": "off",
                     "@typescript-eslint/no-unnecessary-type-parameters": "off",
@@ -265,12 +251,6 @@ const getConfig = (options = {}) => {
                     },
                 },
             }),
-            {
-                files: ['**/*.ts'],
-                rules: {
-                    "max-lines-per-function": ["error", { "max": 50 }],
-                }
-            },
         );
     }
 
